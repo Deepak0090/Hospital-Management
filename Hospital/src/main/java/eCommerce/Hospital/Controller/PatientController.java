@@ -27,7 +27,7 @@ public class PatientController {
    }
 
     @GetMapping("/{id}")
-    public Patient getById(@PathVariable Integer id){
+    public Optional<Patient> getById(@PathVariable Integer id){
        return patientService.getbyid(id);
   }
     @PutMapping("/")

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("v1/doctor")
@@ -19,7 +20,7 @@ public class DoctorController {
         return doctorService.getall();
     }
     @GetMapping("/{id}")
-    public Doctor getbyid(@PathVariable Integer id){
+    public Optional<Doctor> getbyid(@PathVariable Integer id){
         return doctorService.getbyId(id);
     }
 

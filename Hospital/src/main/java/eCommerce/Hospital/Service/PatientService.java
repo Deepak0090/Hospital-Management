@@ -7,10 +7,7 @@ import eCommerce.Hospital.Repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class PatientService {
@@ -22,32 +19,48 @@ public class PatientService {
     PatientRepository patientRepository;
 
     public List<Patient> getAl(){
-        return patientRepository.getAllPatient();
+        return patientRepository.findAll();
     }
 
-    public Patient getbyid(Integer id){
-        return patientRepository.getPatientById(id);
+    public Optional<Patient> getbyid(Integer id){
+        Optional<Patient> patient = patientRepository.findById(id);
+        if (!patient.isPresent()){
+            return null;
+        }
+        return patientRepository.findById(id);
     }
     public Patient addPat(Patient patient){
-        Doctor doctor =doctorRepository.getbyId(patient.getDoctorId());
-        if (doctor==null) return null;
+//        Doctor doctor =doctorRepository.getbyId(patient.getDoctorId());
+//        if (doctor==null) return null;
+        Patient patient1 = new Patient();
+        patient1.setId(patient.getId());
+        patient1.setDisease(patient.getDisease());
+        patient1.setName(patient.getName());
+        patient1.setAge(patient.getAge());
+        patient1.setGender(patient.getGender());
+        return patientRepository.save(patient1);
 
-        Patient patient1 = patientRepository.addPatient(patient);
-        if (doctor.getPatients()==null){
-            doctor.setPatients(new ArrayList<Patient>());
-            doctor.getPatients().add(patient1);
-        }else {
-            doctor.getPatients().add(patient1);
-        }
-         doctorRepository.update(doctor);
-        return patient1;
     }
 
     public Patient updateP(Patient patient){
-        return patientRepository.UpdatePatient(patient);
+        Optional<Patient> patient1 = patientRepository.findById(patient.getId());
+        if (!patient1.isPresent()){
+            return null;
+        }
+        Patient patient2 = patient1.get();
+        patient2.setGender(patient.getGender());
+        patient2.setAge(patient.getAge());
+        patient2.setName(patient.getName());
+        patient2.setId(patient.getId());
+        patient2.setDisease(patient.getDisease());
+      return   patientRepository.save(patient2);
     }
-    public Patient deleteP(Integer id){
-        return patientRepository.DeletePatient(id);
+    public void deleteP(Integer id){
+       Optional<Patient> patient = patientRepository.findById(id);
+       if (!patient.isPresent()){
+           System.out.println("Patient Not Found against off this Id");
+       }
+       patientRepository.deleteById(id);
     }
 
 }
